@@ -1,0 +1,67 @@
+#! /bin/sh
+
+# Touchpad Controls
+xinput set-prop "SYNA2393:00 06CB:7A13 Touchpad" "libinput Click Method Enabled" 0 1
+xinput set-prop "SYNA2393:00 06CB:7A13 Touchpad" "libinput Tapping Enabled" 1
+xinput set-prop "SYNA2393:00 06CB:7A13 Touchpad" "libinput Natural Scrolling Enabled" 1
+
+
+export PANEL_FIFO="/tmp/panel-fifo"
+
+MONITOR_CHECK="$(~/dotfiles/scripts/monitor/check.sh)"
+
+if [ "$MONITOR_CHECK" = "laptop" ]; then
+    export MONITOR="eDP-1"
+    echo " " > ~/dotfiles/scripts/monitor/monicon.txt
+elif [ "$MONITOR_CHECK" = "laptop-gpu" ]; then
+    export MONITOR="eDP-1-1"
+    echo " " > ~/dotfiles/scripts/monitor/monicon.txt
+elif [ "$MONITOR_CHECK" = "external" ]; then
+    echo " " > ~/dotfiles/scripts/monitor/monicon.txt
+    export MONITOR="DP-3"
+    xrandr --output eDP-1 --off	
+    xrandr --output DP-3 --auto
+    bspc monitor eDP-1 --remove
+elif [ "$MONITOR_CHECK" = "external-gpu" ]; then
+    echo " " > ~/dotfiles/scripts/monitor/monicon.txt
+    export MONITOR="DP-1-3"
+    xrandr --output eDP-1 --off	
+    xrandr --output DP-3 --auto
+    bspc monitor eDP-1 --remove
+else
+    export MONITOR="eDP-1"
+    echo " " > ~/dotfiles/scripts/monitor/monicon.txt
+fi
+
+bspc monitor $MONITOR -d Web Slack VSCode ClickUp 5 6 7 8 9 0 
+
+sxhkd &
+
+bspc config border_width         2
+bspc config window_gap           4
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+bspc rule -a Google-chrome:google-chrome desktop=Web
+bspc rule -a Slack:slack desktop=Slack
+bspc rule -a Code:code desktop=VSCode
+bspc rule -a "ClickUp Desktop" desktop=ClickUp
+bspc rule -a mplayer2 state=floating
+bspc rule -a Kupfer.py focus=on
+bspc rule -a Screenkey manage=off
+
+feh --bg-center ~/Pictures/blue_wallpaper.jpg
+google-chrome-stable &
+slack &
+code &
+~/Applications/clickup-desktop-2.0.8-x86_64.AppImage &
+easystroke &
+compton &
+polybar main &
+nm-applet &
+/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
+export _JAVA_AWT_WM_NONREPARENTING=1
+xsetroot -cursor_name left_ptr
+wmname LG3D
