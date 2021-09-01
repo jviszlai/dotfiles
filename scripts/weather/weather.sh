@@ -25,7 +25,7 @@ get_icon() {
 }
 
 KEY="$(cat ~/wm/scripts/weather/key.txt)"
-CITY="Atlanta"
+CITY="Chicago"
 UNITS="imperial"
 SYMBOL="°"
 
